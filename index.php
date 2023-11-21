@@ -3,6 +3,11 @@ require_once 'helpers.php';
 require_once 'functions.php';
 require_once 'data.php';
 
+//$res = getDtRange('2023-11-24');
+//echo "\nres=";
+//print_r($res);
+//exit;
+
 $is_auth = rand(0, 1);
 $user_name = 'User3548'; // укажите здесь ваше имя
 

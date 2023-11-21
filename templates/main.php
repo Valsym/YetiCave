@@ -18,7 +18,7 @@
     <ul class="lots__list">
         <!--заполните этот список из массива с товарами-->
         <?php
-        foreach ($lots as [$lotName, $catName, $price, $img]) { ?>
+        foreach ($lots as [$lotName, $catName, $price, $img, $timeFinish]) { ?>
             <li class="lots__item lot">
                 <div class="lot__image">
                     <img src="<?=$img ?>" width="350" height="260" alt="">
@@ -31,8 +31,12 @@
                             <span class="lot__amount"><?= $price ?></span>
                             <span class="lot__cost"><?= numberSum(htmlspecialchars($price)) ?></span>
                         </div>
-                        <div class="lot__timer timer">
-                            12:23
+                        <?php
+                        [$hours, $minutes] = getDtRange($timeFinish);
+                        $finish = $hours < 1 ? 'timer--finishing' : '';
+                        ?>
+                        <div class="lot__timer timer <?= $finish ?>">
+                            <?= "$hours:$minutes" ?>
                         </div>
                     </div>
                 </div>
