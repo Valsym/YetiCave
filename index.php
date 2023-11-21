@@ -19,6 +19,14 @@ $lots = [
     ['Куртка для сноуборда DC Mutiny Charocal',	'Одежда',	7500,	'img/lot-5.jpg'],
     ['Маска Oakley Canopy',	'Разное',	5400,	'img/lot-6.jpg'],
 ];
+
+function numberSum($sum) {
+    $sum = ceil($sum);
+    if ($sum > 1000) {
+        $sum = number_format($sum, 0, '', ' ');
+    }
+    return $sum . ' ₽';
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -100,7 +108,7 @@ $lots = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount"><?=$price ?></span>
-                            <span class="lot__cost"><?=$price ?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=numberSum($price) ?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
