@@ -6,9 +6,6 @@
 
 USE yeticave;
 
-SET FOREIGN_KEY_CHECKS=0;
--- без этой установки меня замучала ошибка:
--- Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails
 -- --------------------------------------------------------
 
 --
