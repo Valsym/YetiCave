@@ -22,11 +22,11 @@ INSERT INTO `user` (`id`, `date_registration`, `email`, `user_name`, `user_passw
 
 INSERT INTO `category` (`id`, `name`, `codename`) VALUES
              (1, 'Доски и лыжи', 'boards'),
-             (2, 'Крепления', 'mounts'),
+             (2, 'Крепления', 'attachment'),
              (3, 'Ботинки', 'boots'),
-             (4, 'Одежда', 'clothes'),
+             (4, 'Одежда', 'clothing'),
              (5, 'Инструменты', 'tools'),
-             (6, 'Разное', 'others');
+             (6, 'Разное', 'other');
 -- --------------------------------------------------------
 
 --

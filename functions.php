@@ -10,6 +10,9 @@ function numberSum($sum) {
 
 function getDtRange($datetime) {
     date_default_timezone_set("Europe/Moscow");
+    if (!is_numeric($datetime) ) {
+        $datetime = strtotime($datetime);
+    }
     $diff = $datetime - time();
     if ($diff <= 0) return [0, 0];
     $hours = floor($diff / 3600);

@@ -2,16 +2,36 @@
 require_once 'helpers.php';
 require_once 'functions.php';
 require_once 'data.php';
+require_once 'init.php';
+require_once 'models.php';
 
-//$res = getDtRange('2023-11-24');
-//echo "\nres=";
-//print_r($res);
-//exit;
 
-$is_auth = rand(0, 1);
-$user_name = 'User3548'; // укажите здесь ваше имя
+if ($con == false) {
+    //print("Ошибка подключения к БД: " . mysqli_connect_error());
+    $error = mysqli_connect_error();
+    //exit;
+} else {
+    //print("Соединение установлено");
+    // выполнение запросов
+    $sql = get_query_list_lots();
+    $res = mysqli_query($con, $sql);
+    if (!$res) {
+        $error = mysqli_error($con);
+    } else {
+        $lots = mysqli_fetch_all($res, MYSQLI_NUM);
+    }
 
-$pageContent = include_template('main.php', ['cats' => $cats, 'lots' => $lots]);
+    $sql = "select codename, name from category";
+    $res = mysqli_query($con, $sql);
+    if (!$res) {
+        $error = mysqli_error($con);
+    } else {
+        $cats = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    }
+}
+
+$pageContent = include_template('main.php',
+    ['cats' => $cats, 'lots' => $lots]);
 
 $pageLayout = include_template('layout.php', [
     'title' => 'Главная',

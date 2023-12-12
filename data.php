@@ -1,5 +1,8 @@
 <?php
 
+$is_auth = rand(0, 1);
+$user_name = 'Петя'; // укажите здесь ваше имя
+/*
 $cats = [
     'boards' => 'Доски и лыжи',
     'mounts' => 'Крепления',
@@ -18,4 +21,6 @@ $lots = [
     ['Маска Oakley Canopy',	$cats['others'],	5400,	'img/lot-6.jpg', strtotime("+55 minutes")],
 ];
 
+print_r($lots);
+*/
 ?>

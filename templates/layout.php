@@ -56,9 +56,9 @@
         <ul class="nav__list container">
             <!--заполните этот список из массива категорий-->
             <?php
-            foreach ($cats as $key => $catName) { ?>
+            foreach ($cats as $catName) { ?>
                 <li class="nav__item">
-                    <a href="pages/all-lots.html"><?= $catName ?></a>
+                    <a href="pages/all-lots.html"><?= $catName['name'] ?></a>
                 </li>
             <?php } ?>
         </ul>

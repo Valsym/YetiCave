@@ -4,9 +4,9 @@
     <ul class="promo__list">
         <!--заполните этот список из массива категорий-->
         <?php
-        foreach ($cats as $key => $catName) { ?>
-            <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="pages/all-lots.html"><?= $catName ?></a>
+        foreach ($cats as $catName) { ?>
+            <li class="promo__item promo__item--<?=$catName['codename'] ?>">
+                <a class="promo__link" href="pages/all-lots.html"><?= $catName['name'] ?></a>
             </li>
         <?php } ?>
     </ul>
