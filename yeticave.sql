@@ -70,18 +70,18 @@ CREATE TABLE IF NOT EXISTS `yeticave`.`lots` (
   CONSTRAINT `category_id`
     FOREIGN KEY (`id`)
     REFERENCES `yeticave`.`category` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `author_id`
     FOREIGN KEY (`id`)
     REFERENCES `yeticave`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `winner_id`
     FOREIGN KEY (`id`)
     REFERENCES `yeticave`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -99,13 +99,13 @@ CREATE TABLE IF NOT EXISTS `yeticave`.`bets` (
   CONSTRAINT `lot_id`
     FOREIGN KEY (`id`)
     REFERENCES `yeticave`.`lots` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `user_id`
     FOREIGN KEY (`id`)
     REFERENCES `yeticave`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 

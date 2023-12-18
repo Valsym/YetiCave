@@ -1,9 +1,9 @@
 <nav class="nav">
     <ul class="nav__list container">
         <?php
-        foreach ($cats as $catName) { ?>
+        foreach ($cats as $cat_came) { ?>
             <li class="nav__item">
-                <a href="pages/all-lots.html"><?= $catName['name'] ?></a>
+                <a href="pages/all-lots.html"><?= $cat_came['name'] ?></a>
             </li>
         <?php } ?>
     </ul>
