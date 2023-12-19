@@ -18,7 +18,9 @@ if (!$lot_id) {
 }
 // Проверяем существование параметра запроса с ID лота.
 $sql = "select id from lots where lots.id = $lot_id";
+//echo "\nsql=$sql\nres:";
 $res = mysqli_query($con, $sql);
+//print_r($res);
 $records_count = mysqli_num_rows($res);
 if (0 === $records_count) {
     http_response_code(404);
@@ -38,13 +40,15 @@ if (!$res) {
     $lot = mysqli_fetch_array($res);
 }
 
-$sql = "select codename, name from category";
-$res = mysqli_query($con, $sql);
-if (!$res) {
-    $error = mysqli_error($con);
-} else {
-    $cats = mysqli_fetch_all($res, MYSQLI_ASSOC);
-}
+//$sql = "select codename, name from category";
+//$res = mysqli_query($con, $sql);
+//if (!$res) {
+//    $error = mysqli_error($con);
+//} else {
+//    $cats = mysqli_fetch_all($res, MYSQLI_ASSOC);
+//}
+
+$cats = get_categories($con, 'categories');
 
 
 $pageContent = include_template('lot.php',

@@ -62,9 +62,9 @@ function udate_img_path()
  * @param $num - число введенное пользователем
  * @return string|void|null - текст сообщение об ошибке или null
  */
-function validate_number($num) {
+function validate_number($num): ?string {
     if (!empty($num)) {
-//        $num *= 1;
+        $num = (int) $num;
         if (is_int($num) && $num > 0) {
             return null;
         }
@@ -77,8 +77,8 @@ function validate_number($num) {
  * @param $con - ресурс соединения с БД
  * @return array|string
  */
-function get_categories($con) {
-    $sql = "select id, name from category";
+function get_categories($con, $cat_table) {
+    $sql = "select id, name from $cat_table";
     $res = mysqli_query($con, $sql);
     if (!$res) {
         return mysqli_error($con);

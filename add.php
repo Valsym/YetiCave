@@ -11,7 +11,7 @@ if ($con === false) {
     exit;
 }
 //udate_img_path();
-$cats = get_categories($con);
+$cats = get_categories($con, 'categories');
 $cat_id = array_column($cats, 'id');
 $lot = $lot ?? [];
 $page_content = include_template('main-add.php',
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Перенаправить на страницу просмотра лота
         if ($res) {
             $lot_id = mysqli_insert_id($con);
-            header("Location: http://yeti.cave/lot.php?lot=$lot_id/");
+            header("Location: http://yeti.cave/lot.php?lot=$lot_id");
         } else {
             $error = mysqli_error($con);
             console_log($error);

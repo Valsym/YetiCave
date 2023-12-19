@@ -21,7 +21,7 @@ if ($con == false) {
         $lots = mysqli_fetch_all($res, MYSQLI_NUM);
     }
 
-    $sql = "select codename, name from category";
+    $sql = "select codename, name from categories";
     $res = mysqli_query($con, $sql);
     if (!$res) {
         $error = mysqli_error($con);
