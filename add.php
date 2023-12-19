@@ -5,11 +5,7 @@ require_once 'functions.php';
 require_once 'data.php';
 require_once 'models.php';
 
-if ($con === false) {
-    $error = mysqli_connect_error();
-    print($error);
-    exit;
-}
+
 //udate_img_path();
 $cats = get_categories($con, 'categories');
 $cat_id = array_column($cats, 'id');

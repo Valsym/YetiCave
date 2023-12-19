@@ -4,7 +4,7 @@ function console_log( $data ){
     echo 'console.log('. json_encode( $data ) .')';
     echo '</script>';
 }
-function numberSum($sum) {
+function number_sum($sum) {
     $sum = ceil($sum);
     if ($sum > 1000) {
         $sum = number_format($sum, 0, '', ' ');
@@ -12,7 +12,7 @@ function numberSum($sum) {
     return $sum . ' ₽';
 }
 
-function getDtRange($datetime) {
+function get_dt_range($datetime) {
     date_default_timezone_set("Europe/Moscow");
     if (!is_numeric($datetime) ) {
         $datetime = strtotime($datetime);
@@ -26,6 +26,10 @@ function getDtRange($datetime) {
     return [$hours, $minutes];
 }
 
+/**
+ * Замена path img/ на uploads/ в столбце img, в таблице lots
+ * @return void
+ */
 function udate_img_path()
 {
     $sql = "select id, img from lots";
@@ -78,7 +82,7 @@ function validate_number($num): ?string {
  * @return array|string
  */
 function get_categories($con, $cat_table) {
-    $sql = "select id, name from $cat_table";
+    $sql = "select id, name, codename from $cat_table";
     $res = mysqli_query($con, $sql);
     if (!$res) {
         return mysqli_error($con);
@@ -106,9 +110,36 @@ function validate_category($cat_id, $cat_ids) {
  */
 function validate_date($date) {
     if (is_date_valid($date)) {
-
+        [$hours, $minutes] = get_dt_range($date);
+        if ($hours * 24 + $minutes <= 24 * 24) {
+            return "Содержимое поля должно быть больше текущей даты, хотя бы на один день";
+        }
     } else {
         return "Содержимое поля «дата завершения» должно быть датой в формате «ГГГГ-ММ-ДД»";
     }
+}
+
+/**
+ * Проверка валидности e-mail
+ * @param $con ресурс соединения с БД
+ * @param $email который ввел пользователь
+ * @return string|null строка ошибки или null
+ */
+function validate_email($con, $email) {
+    if( filter_var( $email ,FILTER_VALIDATE_EMAIL )) {
+        $sql = "select id from users where users.email = $email";
+        print($sql);
+        $res = mysqli_query($con, $sql);
+        echo "\nres=";
+        print_r($res);
+        if (!$res) {
+            return null;
+//            $records_count = mysqli_num_rows($res);
+        }
+//        if (0 === $records_count) {
+
+//        }
+    }
+    return "Поле email не валидно";
 }
 ?>

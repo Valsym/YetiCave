@@ -33,7 +33,7 @@
                 <?php } else { ?>
                     <ul class="user-menu__list">
                         <li class="user-menu__item">
-                            <a href="#">Регистрация</a>
+                            <a href="../sign-up.php">Регистрация</a>
                         </li>
                         <li class="user-menu__item">
                             <a href="#">Вход</a>
@@ -56,9 +56,9 @@
         <ul class="nav__list container">
             <!--заполните этот список из массива категорий-->
             <?php
-            foreach ($cats as $cat_name) { ?>
+            foreach ($cats as $cat) { ?>
                 <li class="nav__item">
-                    <a href="pages/all-lots.html"><?= $cat_name['name'] ?></a>
+                    <a href="pages/all-lots.html"><?= $cat['name'] ?></a>
                 </li>
             <?php } ?>
         </ul>
@@ -105,7 +105,7 @@
     </div>
 </footer>
 
-<!--<script src="flatpickr.js"></script>-->
+<script src="flatpickr.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

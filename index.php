@@ -6,29 +6,25 @@ require_once 'init.php';
 require_once 'models.php';
 
 
-if ($con == false) {
-    //print("Ошибка подключения к БД: " . mysqli_connect_error());
-    $error = mysqli_connect_error();
-    //exit;
-} else {
-    //print("Соединение установлено");
-    // выполнение запросов
-    $sql = get_query_list_lots();
-    $res = mysqli_query($con, $sql);
-    if (!$res) {
-        $error = mysqli_error($con);
-    } else {
-        $lots = mysqli_fetch_all($res, MYSQLI_NUM);
-    }
 
-    $sql = "select codename, name from categories";
-    $res = mysqli_query($con, $sql);
-    if (!$res) {
-        $error = mysqli_error($con);
-    } else {
-        $cats = mysqli_fetch_all($res, MYSQLI_ASSOC);
-    }
+//print("Соединение установлено");
+// выполнение запросов
+$sql = get_query_list_lots();
+$res = mysqli_query($con, $sql);
+if (!$res) {
+    $error = mysqli_error($con);
+} else {
+    $lots = mysqli_fetch_all($res, MYSQLI_NUM);
 }
+
+$sql = "select codename, name from categories";
+$res = mysqli_query($con, $sql);
+if (!$res) {
+    $error = mysqli_error($con);
+} else {
+    $cats = mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
 
 $pageContent = include_template('main.php',
     ['cats' => $cats, 'lots' => $lots]);
