@@ -27,6 +27,31 @@ function get_dt_range($datetime) {
 }
 
 /**
+ * Меняет пароль на '123456' для пользователя с указанным email
+ * @param $con
+ * @param $email
+ * @return void
+ */
+function update_pass($con, $email) {
+    $sql = "select id from users as u where u.email = '$email'";
+    $res = mysqli_query($con, $sql);
+    echo "\n sql=$sql \nres=";
+    print_r($res);
+    if ($res) {
+        $newpass = password_hash('123456', PASSWORD_BCRYPT);
+        $sql = "update users as u set u.user_password = '$newpass' where u.email = '$email'";
+        echo "\nnewpass=$newpass";
+        $res = mysqli_query($con, $sql);
+        if (!$res) {
+            $error = mysqli_error($con);
+            print("\n".$error);
+        } else {
+            echo " - OK!";
+        }
+    }
+}
+
+/**
  * Замена path img/ на uploads/ в столбце img, в таблице lots
  * @return void
  */
@@ -39,7 +64,6 @@ function udate_img_path()
         print($error);
     }
     $imgs = mysqli_fetch_all($res, MYSQLI_ASSOC);
-//print_r($imgs);
     foreach ($imgs as $img) {
         $old_img = $img['img'];
         $id = $img['id'];
@@ -57,7 +81,6 @@ function udate_img_path()
         } else {
             echo " - OK!";
         }
-//    exit;
     }
 }
 
@@ -72,8 +95,8 @@ function validate_number($num): ?string {
         if (is_int($num) && $num > 0) {
             return null;
         }
-        return "Введите целое число больше ноля";
     }
+    return "Введите целое число больше ноля";
 }
 
 /**
@@ -120,26 +143,19 @@ function validate_date($date) {
 }
 
 /**
- * Проверка валидности e-mail
+ * Проверка валидности e-mail и на существование в базе
  * @param $con ресурс соединения с БД
  * @param $email который ввел пользователь
  * @return string|null строка ошибки или null
  */
-function validate_email($con, $email) {
+function validate_email_not_repeat($con, $email) {
     if( filter_var( $email ,FILTER_VALIDATE_EMAIL )) {
-        $sql = "select id from users where users.email = $email";
-        print($sql);
+        $sql = "select email from users where users.email = '$email'";
         $res = mysqli_query($con, $sql);
-        echo "\nres=";
-        print_r($res);
         if (!$res) {
             return null;
-//            $records_count = mysqli_num_rows($res);
         }
-//        if (0 === $records_count) {
-
-//        }
     }
-    return "Поле email не валидно";
+    return "Поле email не валидно или такой адрес уже существует";
 }
 ?>

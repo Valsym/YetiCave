@@ -5,6 +5,16 @@ require_once 'functions.php';
 require_once 'data.php';
 require_once 'models.php';
 
+session_start();
+if (isset($_SESSION['user'])) {
+    $is_auth = true;
+    $user_name = $_SESSION['user']['user_name'];
+} else {
+    $is_auth = false;
+    $user_name = '';
+    http_response_code(403);
+    exit;
+}
 
 //udate_img_path();
 $cats = get_categories($con, 'categories');
@@ -35,10 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($required_fields as $key) {
         $arg[$key] = FILTER_DEFAULT;
     }
-    //print_r($arg);
+
     $lot = filter_input_array(INPUT_POST, $arg, true);
     $lot['category'] = (int) $lot['category'];
-//    print_r($lot);//exit;
 
     foreach ($lot as $field => $value) {
         if (isset($rules[$field])) {
@@ -53,16 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-//    print_r($errors);exit;
 
     if(!empty($_FILES["lot_img"]["name"])) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-//        $file_name = $_FILES['lot_img']['tmp_name'];
         $tmp_name = $_FILES['lot_img']['tmp_name'];
         $file_path = __DIR__ . '/uploads/';
-//        $file_url = '/uploads/' . $file_name;
         $file_size = $_FILES['lot_img']['size'];
-
         $file_type = finfo_file($finfo, $tmp_name);
 
         $ext = null;
@@ -102,18 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'error' => $errors]);
     } else {
         // Сохранить новый лот в БД
-//        $sql = "SET FOREIGN_KEY_CHECKS = 0";
-//        $res = mysqli_query($con, $sql);
         $user_id = 2;
-//$required_fields = ['lot-name', 'category', 'message', 'lot-img', 'lot-rate', 'lot-step', 'lot-date'];
         $sql = "insert into lots (title, category_id, lot_description, img, start_price, " .
                   "step, date_finish, author_id) values " .
                     "(?, ?, ?, ?, ?, ?, ? , $user_id)";
-//        var_dump($lot);
-//        console_log($sql);
         $stmt = db_get_prepare_stmt($con, $sql, $lot);
-//        var_dump($stmt);//exit;
-//        console_log($stmt);
         $res = mysqli_stmt_execute($stmt);
 
         // Перенаправить на страницу просмотра лота
@@ -139,6 +137,3 @@ $page_layout = include_template('layout-add.php', [
     'cats' => $cats]);
 
 print($page_layout);
-
-
-//

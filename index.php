@@ -5,10 +5,15 @@ require_once 'data.php';
 require_once 'init.php';
 require_once 'models.php';
 
+session_start();
+if (isset($_SESSION['user'])) {
+    $is_auth = true;
+    $user_name = $_SESSION['user']['user_name'];
+} else {
+    $is_auth = false;
+    $user_name = '';
+}
 
-
-//print("Соединение установлено");
-// выполнение запросов
 $sql = get_query_list_lots();
 $res = mysqli_query($con, $sql);
 if (!$res) {
@@ -29,8 +34,11 @@ if (!$res) {
 $pageContent = include_template('main.php',
     ['cats' => $cats, 'lots' => $lots]);
 
+$class_container = 'container';
+
 $pageLayout = include_template('layout.php', [
     'title' => 'Главная',
+    'class_container' => $class_container,
     'is_auth' => $is_auth,
     'user_name' => $user_name,
     'content' => $pageContent,

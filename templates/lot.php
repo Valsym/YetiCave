@@ -22,12 +22,13 @@
             <p class="lot-item__description"><?=$lot_desc ?></p>
         </div>
         <?php
-        [$hours, $minutes] = getDtRange($time_finish);
+        [$hours, $minutes] = get_dt_range($time_finish);
         $finish = $hours < 1 ? 'timer--finishing' : '';
         ?>
+        <?php if ($is_auth) { ?>
         <div class="lot-item__right">
             <div class="lot-item__state">
-                <div class="lot-item__timer timer timer--finishing">
+                <div class="lot-item__timer timer <?=$finish ?>">
                     <?= "$hours:$minutes" ?>
                 </div>
                 <div class="lot-item__cost-state">
@@ -41,6 +42,7 @@
                 </div>
             </div>
         </div>
+        <?php } ?>
     </div>
 </section>
 

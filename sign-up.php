@@ -5,7 +5,17 @@ require_once 'functions.php';
 require_once 'data.php';
 require_once 'models.php';
 
-$is_auth = false;
+session_start();
+if (isset($_SESSION['user'])) {
+    $is_auth = true;
+    $user_name = $_SESSION['user']['user_name'];
+    http_response_code(403);
+    exit;
+} else {
+    $is_auth = false;
+    $user_name = '';
+}
+
 $sql = "select codename, name from categories";
 $res = mysqli_query($con, $sql);
 if (!$res) {
@@ -22,17 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
     $rules = [
         'email' => function ($value) use ($con) {
-            return validate_email($con, $value);
+            return validate_email_not_repeat($con, $value);
         },
     ];
 
     foreach ($required_fields as $key) {
         $arg[$key] = FILTER_DEFAULT;
     }
-    //print_r($arg);
-    $sign_data = filter_input_array(INPUT_POST, $arg, true);
 
-//    print_r($lot);//exit;
+    $sign_data = filter_input_array(INPUT_POST, $arg, true);
 
     foreach ($sign_data as $field => $value) {
         if (isset($rules[$field])) {
@@ -54,20 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'sign_up' => $sign_data,
             'error' => $errors]);
     } else {
-        // Сохранить новый лот в БД
-//        $sql = "SET FOREIGN_KEY_CHECKS = 0";
-//        $res = mysqli_query($con, $sql);
-        $user_id = 2;
-//$required_fields = ['lot-name', 'category', 'message', 'lot-img', 'lot-rate', 'lot-step', 'lot-date'];
+        // Сохранить нового юзера в БД
         $sql = "insert into users (email, user_name, user_password, contacts) values " .
             "(?, ?, ?, ?)";
         $pass = password_hash($sign_data['password'], PASSWORD_BCRYPT);
-//        var_dump($lot);
-//        console_log($sql);
         $stmt = db_get_prepare_stmt($con, $sql, [$sign_data['email'],
             $sign_data['name'], $pass, $sign_data['message']]);
-//        var_dump($stmt);//exit;
-//        console_log($stmt);
+
         $res = mysqli_stmt_execute($stmt);
 
         // Перенаправить на страницу просмотра лота
@@ -84,12 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
-
 $page_layout = include_template('layout.php', [
     'title' => 'Регистрация',
     'is_auth' => $is_auth,
-    'user_name' => '',
+    'user_name' => $user_name,
     'content' => $page_content,
     'cats' => $cats]);
 
