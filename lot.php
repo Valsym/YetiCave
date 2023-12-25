@@ -14,12 +14,6 @@ if (isset($_SESSION['user'])) {
     $user_name = '';
 }
 
-if ($con == false) {
-    $error = mysqli_connect_error();
-    print($error);
-    exit;
-}
-
 $lot_id = $_GET['lot'] ?? 0;
 if (!$lot_id) {
     http_response_code(404);

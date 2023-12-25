@@ -1,10 +1,23 @@
 <?php
-function console_log( $data ){
+/**
+ * Выводит параметр в консоль, аналогично JS-функции console.log
+ * @param $data
+ * @return void
+ */
+function console_log( $data )
+{
     echo '<script>';
     echo 'console.log('. json_encode( $data ) .')';
     echo '</script>';
 }
-function number_sum($sum) {
+
+/**
+ * Преобразует число в денежный формат и добавляет знак Рубля в конце
+ * @param $sum
+ * @return string
+ */
+function number_sum($sum)
+{
     $sum = ceil($sum);
     if ($sum > 1000) {
         $sum = number_format($sum, 0, '', ' ');
@@ -12,7 +25,13 @@ function number_sum($sum) {
     return $sum . ' ₽';
 }
 
-function get_dt_range($datetime) {
+/**
+ * Рассчитывает сколько часов и минут осталось от текущей метки времени до заданной даты
+ * @param $datetime date, string - заданные дата и время истечения лота
+ * @return array|int[] массив [hours, minutes]
+ */
+function get_dt_range($datetime)
+{
     date_default_timezone_set("Europe/Moscow");
     if (!is_numeric($datetime) ) {
         $datetime = strtotime($datetime);
@@ -32,7 +51,8 @@ function get_dt_range($datetime) {
  * @param $email
  * @return void
  */
-function update_pass($con, $email) {
+function update_pass($con, $email)
+{
     $sql = "select id from users as u where u.email = '$email'";
     $res = mysqli_query($con, $sql);
     echo "\n sql=$sql \nres=";
@@ -85,18 +105,21 @@ function udate_img_path()
 }
 
 /**
- * Проверяет что введенное число целое и больше ноля
+ * Проверяет, что введенное число целое и больше ноля
  * @param $num - число введенное пользователем
  * @return string|void|null - текст сообщение об ошибке или null
  */
-function validate_number($num): ?string {
-    if (!empty($num)) {
-        $num = (int) $num;
+function validate_number(?string $num): ?string
+{
+    if (is_numeric($num) ) {
+        $num *= 1; // преобразуем строку в числовой тип
         if (is_int($num) && $num > 0) {
-            return null;
+            return null; // ошибок нет - возвращаем null
         }
+
     }
-    return "Введите целое число больше ноля";
+
+    return 'Содержимое должно быть целым числом больше ноля';
 }
 
 /**
@@ -104,7 +127,8 @@ function validate_number($num): ?string {
  * @param $con - ресурс соединения с БД
  * @return array|string
  */
-function get_categories($con, $cat_table) {
+function get_categories($con, $cat_table)
+{
     $sql = "select id, name, codename from $cat_table";
     $res = mysqli_query($con, $sql);
     if (!$res) {
@@ -120,7 +144,8 @@ function get_categories($con, $cat_table) {
  * @param $cat_ids - список существующих категорий
  * @return string|void - текст ошибки
  */
-function validate_category($cat_id, $cat_ids) {
+function validate_category($cat_id, $cat_ids)
+{
     if (!in_array($cat_id, $cat_ids)) {
         return "Указана несуществующая категория";
     }
@@ -131,7 +156,8 @@ function validate_category($cat_id, $cat_ids) {
  * @param $date введенная пользователем дата
  * @return string|void строка ошибки
  */
-function validate_date($date) {
+function validate_date($date)
+{
     if (is_date_valid($date)) {
         [$hours, $minutes] = get_dt_range($date);
         if ($hours * 24 + $minutes <= 24 * 24) {
@@ -148,7 +174,8 @@ function validate_date($date) {
  * @param $email который ввел пользователь
  * @return string|null строка ошибки или null
  */
-function validate_email_not_repeat($con, $email) {
+function validate_email_not_repeat($con, $email)
+{
     if( filter_var( $email ,FILTER_VALIDATE_EMAIL )) {
         $sql = "select email from users where users.email = '$email'";
         $res = mysqli_query($con, $sql);
