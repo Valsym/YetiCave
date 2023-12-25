@@ -98,3 +98,6 @@ inner join user as u
     on u.id = b.user_id
 where l.id = 1
 order by b.date_bet desc;
+
+
+CREATE FULLTEXT INDEX lot_ft_search ON lots(title, lot_description);
