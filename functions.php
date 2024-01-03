@@ -16,7 +16,7 @@ function console_log( $data )
  * @param $sum
  * @return string
  */
-function number_sum($sum)
+function format_num($sum)
 {
     $sum = ceil($sum);
     if ($sum > 1000) {

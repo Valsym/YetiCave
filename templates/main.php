@@ -29,7 +29,7 @@
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount"><?= $price ?></span>
-                            <span class="lot__cost"><?= number_sum(htmlspecialchars($price)) ?></span>
+                            <span class="lot__cost"><?= format_num(htmlspecialchars($price)) ?></span>
                         </div>
                         <?php
                         [$hours, $minutes] = get_dt_range($time_finish);
