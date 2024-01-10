@@ -1,4 +1,7 @@
 <?php
+use Imagine\Image\Box;
+use Imagine\Gd\Imagine;
+
 /**
  * Выводит параметр в консоль, аналогично JS-функции console.log
  * @param $data
@@ -71,11 +74,51 @@ function update_pass($con, $email)
     }
 }
 
+function add_img_into_bets($con) {
+    $sql = "select id, lot_id from bets";
+    $res = mysqli_query($con, $sql);
+    if (!$res) {
+        $error = mysqli_error($con);
+        print($error);
+    }
+    $imgs = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    foreach ($imgs as $img) {
+        $lot_id = $img['lot_id'];
+        $bet_img = 'uploads/rate'.$lot_id.'.jpg';
+        if (!file_exists('c:/OSPanel/domains/yeti.cave/public_html/'.$bet_img)) {
+            echo "\nФайл $bet_img не существует ";
+            //continue;
+        } else {
+            echo "\nФайл $bet_img существует";
+        }
+//        $url = "http://yeti.cave/".$bet_img;
+//        $Headers = @get_headers($url);
+//// проверяем ли ответ от сервера с кодом 200 - ОК
+////        if(preg_match("|200|", $Headers[0])) { // - немного дольше :)
+//        if(strpos($Headers[0], '200')) {
+//            echo "Файл $url существует -> ". $Headers[0];
+//        } else {
+//            echo "Файл $url не найден -> ". $Headers[0];
+//        }
+//        print_r($Headers);
+//        continue;
+        $sql = "update bets set bet_img = '$bet_img' where lot_id = $lot_id";
+        //echo "\nnew_str=$new_str";
+        $res = mysqli_query($con, $sql);
+        if (!$res) {
+            $error = mysqli_error($con);
+            print("\n".$error);
+        } else {
+            echo " update OK!";
+        }
+    }
+}
+
 /**
  * Замена path img/ на uploads/ в столбце img, в таблице lots
  * @return void
  */
-function udate_img_path()
+function udate_img_path($con)
 {
     $sql = "select id, img from lots";
     $res = mysqli_query($con, $sql);
@@ -102,6 +145,34 @@ function udate_img_path()
             echo " - OK!";
         }
     }
+}
+
+/**
+ * Создание уменьшенного изображения лота для списка Мои ставки
+ *
+ * @param $con ресурс соединения
+ * @param $lot_id ид лота
+ * @param $lot_img путь к большому изображению лота
+ * @return string путь к уменьшенному изображению или пустая строка
+ */
+function make_bet_img($con, $lot_id, $lot_img) {
+    require_once 'vendor/autoload.php';
+//    require('vendor/autoload.php');
+
+    $imagine = new Imagine();
+
+    $img = $imagine->open(__DIR__ . "/$lot_img");
+    $box = new Box(54, 40);
+    $img->resize($box);
+    $bet_img = "rate$lot_id.jpg";
+    $img->save(__DIR__ . "/uploads/" . $bet_img);
+
+    if (file_exists(//'c:/OSPanel/domains/yeti.cave/public_html/'
+            __DIR__ . "uploads/" . $bet_img)) {
+        return $bet_img;
+    }
+
+    return '';
 }
 
 /**

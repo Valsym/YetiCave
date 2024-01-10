@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sql = "select price_bet from bets where lot_id = $lot_id";
                 $res = mysqli_query($con, $sql);
 //                print_r($res);
-                if (!$curr_price) { // Первая ставка?
+                if (!$curr_price || $lot['start_price'] === $curr_price) { // Первая ставка
                     if ($cost < $lot['start_price'] + $lot['step']) {
                         $error = "Ставка должна быть больше или равна минимальной ставки";
                     }
@@ -78,8 +78,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             if(!$error) {
                 // Сохраняем ставку в БД
-                $sql = "insert into bets (price_bet,user_id, lot_id) values (?, ?, ?)";
-                $stmt = db_get_prepare_stmt($con, $sql, [$cost, $user_id, $lot['id']]);
+                if ($lot['start_price'] === $curr_price) {
+//                    if (isset($lot['img'])) {
+//                        $bet_img = make_bet_img($con, $lot['id'], $lot['img']);
+//                    } else {
+                        $bet_img = '';
+                    console_log("\nФайл bet_img='' ");
+//                    }
+                } else {
+                    $bet_img = 'uploads/rate'.$lot_id.'.jpg';
+                    if (!file_exists(//'c:/OSPanel/domains/yeti.cave/public_html/'
+                            __DIR__ . "/" . $bet_img)) {
+                        console_log("\nФайл $bet_img не существует ");
+                        //continue;
+                        $bet_img = '';
+                    } else {
+                        console_log("\nФайл $bet_img существует");
+                    }
+                }
+                $sql = "insert into bets (price_bet,user_id, lot_id, bet_img) 
+                            values (?, ?, ?, ?)";
+                $stmt = db_get_prepare_stmt($con, $sql, [$cost, $user_id, $lot['id'], $bet_img]);
 //                echo "  Try inser into bets";
                 $res = mysqli_stmt_execute($stmt);
                 if ($res) {

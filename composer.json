@@ -1,0 +1,15 @@
+{
+  "name": "vendor_name/public_html",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Ler",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "imagine/imagine": "^1.3"
+  }
+}

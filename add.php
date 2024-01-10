@@ -70,6 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file_size = $_FILES['lot_img']['size'];
         $file_type = finfo_file($finfo, $tmp_name);
 
+        $test = getimagesize($tmp_name);
+        $width = $test[0];
+        $height = $test[1];
+        if ($width !== 350 || $height !== 260) {
+            $errors['lot_img'] = "Размеры изображения должны быть: 350*260px";
+        }
+
         $ext = null;
         if ($file_type === 'image/jpeg') {
             $ext = 'jpg';
@@ -77,13 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ext = 'png';
         }
 
-        if ($file_size > 200000) {
-            $errors['file_size'] = "Максимальный размер файла: 200Кб";
+        if ($file_size > 91000) {
+            $errors['lot_img'] = "Максимальный размер файла: 91 Кб";
         }
 
-        if ($ext && $file_size <= 200000) {
+        if ($ext && $file_size <= 91000) {
             $file_name = uniqid() . ".$ext";
-            console_log('tmp_name: '.$tmp_name);
+                console_log('tmp_name: '.$tmp_name);
             move_uploaded_file($tmp_name, $file_path . $file_name);
             $lot['lot_img'] = "uploads/" . $file_name;
         } else {
@@ -117,6 +124,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Перенаправить на страницу просмотра лота
         if ($res) {
             $lot_id = mysqli_insert_id($con);
+            //$file_name = uniqid() . ".$ext";
+            $file_name_new = "lot-$lot_id.$ext";
+                console_log('file_name_new: ' . $file_name_new);
+            rename($file_path . $file_name, $file_path . $file_name_new);
+            echo "rename($file_path$file_name -> $file_path$file_name_new)";
+            $lot_img = "uploads/" . $file_name_new;
+            $lot['lot_img'] = $lot_img;
+            $sql = "update lots as l set l.img = '$lot_img' where l.id = $lot_id";
+            $res = mysqli_query($con, $sql);
+            if (!$res) {
+                $error = mysqli_error($con);
+//                print("\n".$error);
+                console_log("\n".$error);
+            } else {
+                console_log("\n update lots img=$lot_img - OK");
+                if (($bet_img = make_bet_img($con, $lot_id, $lot_img))) {
+                    console_log("\n make_bet_img=$bet_img - OK");
+                } else {
+                    console_log("\n make_bet_img=$bet_img - not OK");
+                }
+            }
             header("Location: http://yeti.cave/lot.php?lot=$lot_id");
         } else {
             $error = mysqli_error($con);
