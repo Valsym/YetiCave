@@ -261,4 +261,28 @@ function validate_email_not_repeat($con, $email)
     return "Поле email не валидно или такой адрес уже существует";
 }
 
+function get_old_lots($con)
+{
+    $sql = "select id, title from lots as l
+                where l.winner_id is null and l.date_finish <= now()";
+    $res = mysqli_query($con, $sql);
+    if (!$res) {
+        return [];
+    }
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+function get_last_bet($con, $lot_id)
+{
+    $sql = "select price_bet, user_id, u.user_name from bets as b
+                join users as u 
+                    on u.id = user_id
+                where b.lot_id = $lot_id";
+    $res = mysqli_query($con, $sql);
+    if (!$res) {
+        return 0;
+    }
+    $bet = mysqli_fetch_array($res, MYSQLI_ASSOC);
+    return $bet;//['price_bet'] ?? 0;
+}
 ?>

@@ -26,7 +26,7 @@ if (!$lot_id || 0 === $records_count || !$res) {
 $lot = mysqli_fetch_array($res);
 
 $cats = get_categories($con, 'categories');
-$curr_price = get_current_price($con, $lot_id);
+[$curr_price, $user_id_last_bet] = get_current_price($con, $lot_id);
 $curr_price = $curr_price ? $curr_price : $lot['start_price'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -37,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         if ($user_id === $lot['author_id']) {
             $error = "Инициатор лота не может делать ставки";
+        } else if ($user_id === $user_id_last_bet) {
+            $error = "Последняя ставка сделана текущим пользователем";
         } else {
             if (!$cost) {
                 $error = "Не заполнено поле «ваша ставка»";

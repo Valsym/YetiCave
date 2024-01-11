@@ -91,15 +91,16 @@ function get_query_lot($lot_id)
  */
 function get_current_price($con, $lot_id)
 {
-    $sql = "select price_bet from bets where lot_id = $lot_id 
+    $sql = "select price_bet, user_id from bets where lot_id = $lot_id 
             order by price_bet desc limit 1";
     $res = mysqli_query($con, $sql);
 //    print_r($res);
     $price_bet = 0;
+    $user_id = '';
     if ($res->num_rows) {
-        [$price_bet] = mysqli_fetch_array($res);
+        [$price_bet, $user_id] = mysqli_fetch_array($res);
     }
-    return $price_bet;
+    return [$price_bet, $user_id];
 }
 
 /**
