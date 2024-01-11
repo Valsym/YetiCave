@@ -6,13 +6,22 @@ require_once 'data.php';
 require_once 'models.php';
 
 session_start();
-if (isset($_SESSION['user'])) {
-    $is_auth = true;
-    $user_name = $_SESSION['user']['user_name'];
-} else {
-    $is_auth = false;
-    $user_name = '';
-    http_response_code(403);
+if (!$is_auth) {
+    $cats = get_categories($con, 'categories');
+    $header = include_template('header.php',
+        ['cats' => $cats]);
+    $page_content = include_template('403.php',
+        ['header' => $header]);
+    $page_layout = include_template('layout.php', [
+        'title' => 'Доступ запрещен',
+        'is_auth' => $is_auth,
+        'user_name' => $user_name,
+        'content' => $page_content,
+        'cats' => $cats
+    ]);
+
+    print($page_layout);
+//    http_response_code(403);
     exit;
 }
 
@@ -24,8 +33,15 @@ $page_content = include_template('main-add.php',
     ['cats' => $cats]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $required_fields = ['lot-name', 'category', 'message', 'lot_img', 'lot-rate',
-        'lot-step', 'lot-date'];
+    $required_fields = [
+        'lot-name',
+        'category',
+        'message',
+        'lot_img',
+        'lot-rate',
+        'lot-step',
+        'lot-date'
+    ];
     $errors = [];
     $rules = [
         'category' => function ($value) use ($cat_id) {
@@ -47,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $lot = filter_input_array(INPUT_POST, $arg, true);
-    $lot['category'] = (int) $lot['category'];
+    $lot['category'] = (int)$lot['category'];
 
     foreach ($lot as $field => $value) {
         if (isset($rules[$field])) {
@@ -63,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if(!empty($_FILES["lot_img"]["name"])) {
+    if (!empty($_FILES["lot_img"]["name"])) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $tmp_name = $_FILES['lot_img']['tmp_name'];
         $file_path = __DIR__ . '/uploads/';
@@ -90,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($ext && $file_size <= 91000) {
             $file_name = uniqid() . ".$ext";
-                console_log('tmp_name: '.$tmp_name);
+            console_log('tmp_name: ' . $tmp_name);
             move_uploaded_file($tmp_name, $file_path . $file_name);
             $lot['lot_img'] = "uploads/" . $file_name;
         } else {
@@ -111,13 +127,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page_content = include_template('main-add.php', [
             'cats' => $cats,
             'lot' => $lot,
-            'error' => $errors]);
+            'error' => $errors
+        ]);
     } else {
         // Сохранить новый лот в БД
         $user_id = 2;
         $sql = "insert into lots (title, category_id, lot_description, img, start_price, " .
-                  "step, date_finish, author_id) values " .
-                    "(?, ?, ?, ?, ?, ?, ? , $user_id)";
+            "step, date_finish, author_id) values " .
+            "(?, ?, ?, ?, ?, ?, ? , $user_id)";
         $stmt = db_get_prepare_stmt($con, $sql, $lot);
         $res = mysqli_stmt_execute($stmt);
 
@@ -126,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $lot_id = mysqli_insert_id($con);
             //$file_name = uniqid() . ".$ext";
             $file_name_new = "lot-$lot_id.$ext";
-                console_log('file_name_new: ' . $file_name_new);
+            console_log('file_name_new: ' . $file_name_new);
             rename($file_path . $file_name, $file_path . $file_name_new);
             echo "rename($file_path$file_name -> $file_path$file_name_new)";
             $lot_img = "uploads/" . $file_name_new;
@@ -136,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$res) {
                 $error = mysqli_error($con);
 //                print("\n".$error);
-                console_log("\n".$error);
+                console_log("\n" . $error);
             } else {
                 console_log("\n update lots img=$lot_img - OK");
                 if (($bet_img = make_bet_img($con, $lot_id, $lot_img))) {
@@ -162,6 +179,7 @@ $page_layout = include_template('layout-add.php', [
     'is_auth' => $is_auth,
     'user_name' => $user_name,
     'content' => $page_content,
-    'cats' => $cats]);
+    'cats' => $cats
+]);
 
 print($page_layout);

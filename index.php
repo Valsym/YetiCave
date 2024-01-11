@@ -42,7 +42,8 @@ $pageLayout = include_template('layout.php', [
     'is_auth' => $is_auth,
     'user_name' => $user_name,
     'content' => $pageContent,
-    'cats' => $cats]);
+    'cats' => $cats
+]);
 
 print($pageLayout);
 

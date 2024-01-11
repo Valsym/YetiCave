@@ -19,7 +19,7 @@ if ($search) {
     $items_count = get_count_lots($con, $search);
     $page_items = 3;
     $curr_page = $_GET['page'] ?? 1;
-    $page_count = ceil($items_count/$page_items);
+    $page_count = ceil($items_count / $page_items);
     $pages = range(1, $page_count);
     $offset = ($curr_page - 1) * $page_items;
     $goods = get_found_lots($con, $search, $page_items, $offset);
@@ -41,7 +41,8 @@ if ($search) {
         'is_auth' => $is_auth,
         'user_name' => $user_name,
         'content' => $pageContent,
-        'cats' => $cats]);
+        'cats' => $cats
+    ]);
 
     print($pageLayout);
 }

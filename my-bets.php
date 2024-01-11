@@ -6,20 +6,18 @@ require_once 'init.php';
 require_once 'models.php';
 
 if (!$is_auth) {
-    http_response_code(404);
+    page_code_error(404, $con, $is_auth, $user_name, $cats);
+//    http_response_code(404);
     exit;
 }
 $user_id = $_SESSION['user']['id'];
 $cats = get_categories($con, 'categories');
 $bets = get_bets($con, $user_id);
-//print_r($bets);
-//exit;
 
 $pageContent = include_template('my-bets.php',
     [
         'cats' => $cats,
         'bets' => $bets,
-//        'curr_price' => $curr_price,
         'is_auth' => $is_auth,
         'error' => $error ?? ''
     ]);
@@ -29,6 +27,7 @@ $pageLayout = include_template('layout.php', [
     'is_auth' => $is_auth,
     'user_name' => $user_name,
     'content' => $pageContent,
-    'cats' => $cats]);
+    'cats' => $cats
+]);
 
 print($pageLayout);

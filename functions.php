@@ -1,4 +1,5 @@
 <?php
+
 use Imagine\Image\Box;
 use Imagine\Gd\Imagine;
 
@@ -7,10 +8,10 @@ use Imagine\Gd\Imagine;
  * @param $data
  * @return void
  */
-function console_log( $data )
+function console_log($data)
 {
     echo '<script>';
-    echo 'console.log('. json_encode( $data ) .')';
+    echo 'console.log(' . json_encode($data) . ')';
     echo '</script>';
 }
 
@@ -36,11 +37,13 @@ function format_num($sum)
 function get_dt_range($datetime)
 {
     date_default_timezone_set("Europe/Moscow");
-    if (!is_numeric($datetime) ) {
+    if (!is_numeric($datetime)) {
         $datetime = strtotime($datetime);
     }
     $diff = $datetime - time();
-    if ($diff <= 0) return [0, 0];
+    if ($diff <= 0) {
+        return [0, 0];
+    }
     $hours = floor($diff / 3600);
     $minutes = floor(($diff - $hours * 3600) / 60);
     $hours = str_pad($hours, 2, '0', STR_PAD_LEFT);
@@ -67,14 +70,15 @@ function update_pass($con, $email)
         $res = mysqli_query($con, $sql);
         if (!$res) {
             $error = mysqli_error($con);
-            print("\n".$error);
+            print("\n" . $error);
         } else {
             echo " - OK!";
         }
     }
 }
 
-function add_img_into_bets($con) {
+function add_img_into_bets($con)
+{
     $sql = "select id, lot_id from bets";
     $res = mysqli_query($con, $sql);
     if (!$res) {
@@ -84,8 +88,8 @@ function add_img_into_bets($con) {
     $imgs = mysqli_fetch_all($res, MYSQLI_ASSOC);
     foreach ($imgs as $img) {
         $lot_id = $img['lot_id'];
-        $bet_img = 'uploads/rate'.$lot_id.'.jpg';
-        if (!file_exists('c:/OSPanel/domains/yeti.cave/public_html/'.$bet_img)) {
+        $bet_img = 'uploads/rate' . $lot_id . '.jpg';
+        if (!file_exists('c:/OSPanel/domains/yeti.cave/public_html/' . $bet_img)) {
             echo "\nФайл $bet_img не существует ";
             //continue;
         } else {
@@ -107,7 +111,7 @@ function add_img_into_bets($con) {
         $res = mysqli_query($con, $sql);
         if (!$res) {
             $error = mysqli_error($con);
-            print("\n".$error);
+            print("\n" . $error);
         } else {
             echo " update OK!";
         }
@@ -140,7 +144,7 @@ function udate_img_path($con)
         $res = mysqli_query($con, $sql);
         if (!$res) {
             $error = mysqli_error($con);
-            print("\n".$error);
+            print("\n" . $error);
         } else {
             echo " - OK!";
         }
@@ -155,9 +159,9 @@ function udate_img_path($con)
  * @param $lot_img путь к большому изображению лота
  * @return string путь к уменьшенному изображению или пустая строка
  */
-function make_bet_img($con, $lot_id, $lot_img) {
+function make_bet_img($con, $lot_id, $lot_img)
+{
     require_once 'vendor/autoload.php';
-//    require('vendor/autoload.php');
 
     $imagine = new Imagine();
 
@@ -168,7 +172,7 @@ function make_bet_img($con, $lot_id, $lot_img) {
     $img->save(__DIR__ . "/uploads/" . $bet_img);
 
     if (file_exists(//'c:/OSPanel/domains/yeti.cave/public_html/'
-            __DIR__ . "uploads/" . $bet_img)) {
+        __DIR__ . "uploads/" . $bet_img)) {
         return $bet_img;
     }
 
@@ -182,7 +186,7 @@ function make_bet_img($con, $lot_id, $lot_img) {
  */
 function validate_number(?string $num): ?string
 {
-    if (is_numeric($num) ) {
+    if (is_numeric($num)) {
         $num *= 1; // преобразуем строку в числовой тип
         if (is_int($num) && $num > 0) {
             return null; // ошибок нет - возвращаем null
@@ -247,7 +251,7 @@ function validate_date($date)
  */
 function validate_email_not_repeat($con, $email)
 {
-    if( filter_var( $email ,FILTER_VALIDATE_EMAIL )) {
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $sql = "select email from users where users.email = '$email'";
         $res = mysqli_query($con, $sql);
         if (!$res) {
@@ -256,4 +260,5 @@ function validate_email_not_repeat($con, $email)
     }
     return "Поле email не валидно или такой адрес уже существует";
 }
+
 ?>

@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $login = filter_input_array(INPUT_POST,
         [
-            "email"=>FILTER_DEFAULT,
-            "password"=>FILTER_DEFAULT,
+            "email" => FILTER_DEFAULT,
+            "password" => FILTER_DEFAULT,
         ], true);
     $email = $login['email'] = mysqli_real_escape_string($con, $login['email']);
 
@@ -56,7 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page_content = include_template('login.php', [
             'cats' => $cats,
             'login' => $login,
-            'error' => $errors]);
+            'error' => $errors
+        ]);
     } else {
 //        $email = mysqli_real_escape_string($con, $login['email']);
         $sql = "select user_password from users as u where u.email = '$email'";
@@ -65,11 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             [$hash] = mysqli_fetch_array($res, MYSQLI_NUM);
             console_log($hash);//exit;
             if (!password_verify($login['password'], $hash)) {
-                $errors['password'] = "Вы ввели неверный пароль".$login['password'];
+                $errors['password'] = "Вы ввели неверный пароль" . $login['password'];
                 $page_content = include_template('login.php', [
                     'cats' => $cats,
                     'login' => $login,
-                    'error' => $errors]);
+                    'error' => $errors
+                ]);
             } else {
                 //session_start();
                 $sql = "select * from users where email = '$email'"; // !!! '$email' - без таких кавычек не работает
@@ -85,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $page_content = include_template('login.php', [
                 'cats' => $cats,
                 'login' => $login,
-                'error' => $errors]);
+                'error' => $errors
+            ]);
         }
 
     }
@@ -96,6 +99,7 @@ $page_layout = include_template('layout.php', [
     'is_auth' => 0,
     'user_name' => '',
     'content' => $page_content,
-    'cats' => $cats]);
+    'cats' => $cats
+]);
 
 print($page_layout);

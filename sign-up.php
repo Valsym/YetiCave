@@ -6,14 +6,10 @@ require_once 'data.php';
 require_once 'models.php';
 
 session_start();
-if (isset($_SESSION['user'])) {
-    $is_auth = true;
-    $user_name = $_SESSION['user']['user_name'];
-    http_response_code(403);
+if ($is_auth) {
+    page_code_error(403, $con, $is_auth, $user_name, $cats);
+//    http_response_code(403);
     exit;
-} else {
-    $is_auth = false;
-    $user_name = '';
 }
 
 $sql = "select codename, name from categories";
@@ -60,14 +56,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page_content = include_template('sign-up.php', [
             'cats' => $cats,
             'sign_up' => $sign_data,
-            'error' => $errors]);
+            'error' => $errors
+        ]);
     } else {
         // Сохранить нового юзера в БД
         $sql = "insert into users (email, user_name, user_password, contacts) values " .
             "(?, ?, ?, ?)";
         $pass = password_hash($sign_data['password'], PASSWORD_BCRYPT);
-        $stmt = db_get_prepare_stmt($con, $sql, [$sign_data['email'],
-            $sign_data['name'], $pass, $sign_data['message']]);
+        $stmt = db_get_prepare_stmt($con, $sql, [
+            $sign_data['email'],
+            $sign_data['name'],
+            $pass,
+            $sign_data['message']
+        ]);
 
         $res = mysqli_stmt_execute($stmt);
 
@@ -90,6 +91,7 @@ $page_layout = include_template('layout.php', [
     'is_auth' => $is_auth,
     'user_name' => $user_name,
     'content' => $page_content,
-    'cats' => $cats]);
+    'cats' => $cats
+]);
 
 print($page_layout);

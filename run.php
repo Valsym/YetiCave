@@ -1,6 +1,8 @@
 <?php
+
 use Imagine\Image\Box;
 use Imagine\Gd\Imagine;
+
 //Источник: https://internet-34.ru/ispolzovanie-biblioteki-imagine-dlya-raboty-s-izobrazeniyami-na-php
 
 require_once 'helpers.php';

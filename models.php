@@ -7,13 +7,14 @@
  * @param $search строка поиска
  * @return int кол-во найденных лотов или 0
  */
-function get_count_lots($con, $search) {
+function get_count_lots($con, $search)
+{
     $sql = "select * from lots as l
             where MATCH(l.title, l.lot_description) AGAINST('$search' IN BOOLEAN MODE)
             and l.winner_id is null and l.date_finish > now()";
     $res = mysqli_query($con, $sql);
     if ($res) {
-        $records_count = (int) mysqli_num_rows($res);
+        $records_count = (int)mysqli_num_rows($res);
     } else {
         $records_count = 0;
     }
@@ -29,7 +30,8 @@ function get_count_lots($con, $search) {
  * @param $offset смещение
  * @return array результирующий массив с данными найденных лотов
  */
-function get_found_lots($con, $search, $page_items, $offset) {
+function get_found_lots($con, $search, $page_items, $offset)
+{
     $sql = "select l.id, l.title, c.name as cat_name, l.start_price, 
                     l.img, l.date_finish from lots as l
             inner join categories as c 
@@ -110,7 +112,7 @@ function get_current_price($con, $lot_id)
 function get_bets($con, $user_id)
 {
     // Так выбираются все ставки по лоту
-    $sql ="select  DATE_FORMAT(b.date_bet, '%d.%m.%y %H:%i') AS date_bet, 
+    $sql = "select  DATE_FORMAT(b.date_bet, '%d.%m.%y %H:%i') AS date_bet, 
        b.price_bet, l.title, l.date_finish, c.name as cat_name, l.id from bets as b
             inner join lots as l on l.id = b.lot_id 
             inner join categories as c on c.id = l.category_id 
@@ -118,7 +120,7 @@ function get_bets($con, $user_id)
             order by date_bet desc";
 // ANY_VALUE - для агрегации любых атрибутов отношения (в данной ф-ии не используется)
     // Так выбираются только последнюю ставку юзера по лоту
-    $sql ="select  DATE_FORMAT(b.date_bet, '%d.%m.%y %H:%i') AS date_bet, 
+    $sql = "select  DATE_FORMAT(b.date_bet, '%d.%m.%y %H:%i') AS date_bet, 
        b.price_bet, l.title, l.date_finish, c.name as cat_name, l.id from bets as b
            inner join (select max(price_bet) as pb, lot_id from bets group by lot_id ) 
                as b2 on b2.lot_id=b.lot_id and b2.pb = b.price_bet
@@ -145,7 +147,8 @@ function get_bets($con, $user_id)
  * @param $lot_id номер лота
  * @return array|string массив историй ставок или строка ошибки
  */
-function get_history_bets($con, $lot_id) {
+function get_history_bets($con, $lot_id)
+{
     $sql = "select DATE_FORMAT(b.date_bet, '%d.%m.%y %H:%i') AS date_bet, b.price_bet, u.user_name 
      from bets as b 
          inner join users as u on b.user_id = u.id
