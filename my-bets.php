@@ -10,7 +10,7 @@ if (!$is_auth) {
 //    http_response_code(404);
     exit;
 }
-$user_id = $_SESSION['user']['id'];
+//$user_id = $_SESSION['user']['id'];
 $cats = get_categories($con, 'categories');
 $bets = get_bets($con, $user_id);
 

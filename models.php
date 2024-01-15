@@ -122,7 +122,8 @@ function get_bets($con, $user_id)
 // ANY_VALUE - для агрегации любых атрибутов отношения (в данной ф-ии не используется)
     // Так выбираются только последнюю ставку юзера по лоту
     $sql = "select  DATE_FORMAT(b.date_bet, '%d.%m.%y %H:%i') AS date_bet, 
-       b.price_bet, l.title, l.date_finish, c.name as cat_name, l.id from bets as b
+       b.price_bet, l.title, l.date_finish, c.name as cat_name, l.id, 
+       l.winner_id as winner_id from bets as b
            inner join (select max(price_bet) as pb, lot_id from bets group by lot_id ) 
                as b2 on b2.lot_id=b.lot_id and b2.pb = b.price_bet
             inner join lots as l on l.id = b.lot_id 
@@ -133,7 +134,26 @@ function get_bets($con, $user_id)
 // см. пункт 6
     $res = mysqli_query($con, $sql);
     if ($res) {
-        return mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+        $bets = mysqli_fetch_all($res, MYSQLI_ASSOC);
+        foreach ($bets as $key => $bet) {
+//        print_r($bet);
+//        exit;
+            if (($winner_id = $bet['winner_id'])) {
+//            $bets['winner_id'] = $winner_id;
+                $sql = "select contacts from users as u 
+            where u.id = $winner_id";
+                $res = mysqli_query($con, $sql);
+                if ($res) {
+                    $contacts = mysqli_fetch_array($res, MYSQLI_NUM);
+                    $bet['contacts'] = $contacts[0];
+                } else {
+                    $bet['contacts'] = '';
+                }
+                $bets[$key]['contacts'] = $bet['contacts'];
+            }
+            return $bets;
+        }
     } else {
 //        return [];
         $error = mysqli_error($con);
