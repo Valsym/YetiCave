@@ -1,7 +1,13 @@
 <?php
-
 use Imagine\Image\Box;
 use Imagine\Gd\Imagine;
+
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
+
+require_once 'vendor/autoload.php';
+require_once 'config/config.php';
 
 /**
  * Выводит параметр в консоль, аналогично JS-функции console.log
@@ -161,7 +167,7 @@ function udate_img_path($con)
  */
 function make_bet_img($con, $lot_id, $lot_img)
 {
-    require_once 'vendor/autoload.php';
+//    require_once 'vendor/autoload.php';
 
     $imagine = new Imagine();
 
@@ -274,7 +280,7 @@ function get_old_lots($con)
 
 function get_last_bet($con, $lot_id)
 {
-    $sql = "select price_bet, user_id, u.user_name from bets as b
+    $sql = "select price_bet, user_id, u.user_name, u.email from bets as b
                 join users as u 
                     on u.id = user_id
                 where b.lot_id = $lot_id";
@@ -284,5 +290,26 @@ function get_last_bet($con, $lot_id)
     }
     $bet = mysqli_fetch_array($res, MYSQLI_ASSOC);
     return $bet;//['price_bet'] ?? 0;
+}
+
+function send_email($email, $user_name, $lot_id, $log, $pass)
+{
+//    echo "\nlog, pass = $log, $pass";
+
+    $dsn = "smtp://$log:$pass@smtp.yandex.ru:465?encryption=SSL";
+    $transport = Transport::fromDsn($dsn);
+    $mailer = new Mailer($transport);
+
+    $mailto = $mailfrom = $email;
+
+    // Формирование сообщения
+    $email = (new Email())
+        ->to("$mailto")
+        ->from("$mailfrom")
+        ->subject("Уведомление от сервиса «Yeti.cave»")
+        ->text("Уважаемый $user_name. Поздравляем! Ваша ставка победила в лоте №$lot_id");
+    // Отправка сообщения
+    $mailer->send($email);
+
 }
 ?>
