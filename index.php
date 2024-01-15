@@ -45,7 +45,7 @@ $pageContent = include_template('main.php',
         'cats' => $cats,
         'lots' => $lots,
         'wins' => $wins
-    ] );
+    ]);
 
 $class_container = 'container';
 

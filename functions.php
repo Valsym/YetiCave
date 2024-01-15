@@ -1,4 +1,5 @@
 <?php
+
 use Imagine\Image\Box;
 use Imagine\Gd\Imagine;
 
@@ -312,4 +313,5 @@ function send_email($email, $user_name, $lot_id, $log, $pass)
     $mailer->send($email);
 
 }
+
 ?>
